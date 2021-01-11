@@ -24,9 +24,9 @@ tensorflow-gpu==1.13.1
 keras==2.1.5
 
 ### 注意事项
-提供的四个训练好的权重分别是基于mobilenetv1-025、mobilenetv1、mobilenetv2、mobilenetv3主干网络训练而成的。使用的时候注意backbone和权重的对应。 
-训练前注意修改alpha、model_path和backbone使得二者对应。
-预测前注意修改alhpa、model_path和backbone使得二者对应。
+提供的四个训练好的权重分别是基于mobilenetv1-025、mobilenetv1、mobilenetv2、mobilenetv3主干网络训练而成的。使用的时候注意backbone和权重的对应。   
+训练前注意修改alpha、model_path和backbone使得二者对应。  
+预测前注意修改alhpa、model_path和backbone使得二者对应。  
 
 ### 小技巧的设置
 在train.py文件下：   
