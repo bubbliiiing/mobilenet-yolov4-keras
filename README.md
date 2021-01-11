@@ -1,8 +1,8 @@
-## YOLOV4：You Only Look Once目标检测模型在Keras当中的实现
+## YOLOV4：You Only Look Once目标检测模型-修改mobilenet系列主干网络-在pytorch当中的实现
 ---
 
 ### 目录
-1. [实现的内容 Achievement](#实现的内容)
+1. [性能情况 Performance](#性能情况)
 2. [所需环境 Environment](#所需环境)
 3. [注意事项 Attention](#注意事项)
 4. [小技巧的设置 TricksSet](#小技巧的设置)
@@ -11,37 +11,37 @@
 7. [训练步骤 How2train](#训练步骤)
 8. [参考资料 Reference](#Reference)
 
-### 实现的内容
-- [x] 主干特征提取网络：DarkNet53 => CSPDarkNet53
-- [x] 特征金字塔：SPP，PAN
-- [x] 训练用到的小技巧：Mosaic数据增强、Label Smoothing平滑、CIOU、学习率余弦退火衰减
-- [x] 激活函数：使用Mish激活函数
-- [ ] ……balabla
+### 性能情况
+| 训练数据集 | 权值文件名称 | 测试数据集 | 输入图片大小 | mAP 0.5:0.95 | mAP 0.5 |
+| :-----: | :-----: | :------: | :------: | :------: | :-----: |
+| VOC07+12 | [yolov4_mobilenet_v1_025_voc_map64.49.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc_map64.49.h5) | VOC-Test07 | 416x416 | - | 64.49
+| VOC07+12 | [yolov4_mobilenet_v1_voc_map77.57.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc_map77.57.h5) | VOC-Test07 | 416x416 | - | 77.57
+| VOC07+12 | [yolov4_mobilenet_v2_voc_map77.63.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc_map77.63.h5) | VOC-Test07 | 416x416 | - | 77.63
+| VOC07+12 | [yolov4_mobilenet_v3_voc_map75.25.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc_map75.25.h5) | VOC-Test07 | 416x416 | - | 75.25
 
 ### 所需环境
 tensorflow-gpu==1.13.1  
-keras==2.1.5  
+keras==2.1.5
 
 ### 注意事项
-代码中的yolo4_weights.h5是基于608x608的图片训练的，但是由于显存原因。我将代码中的图片大小修改成了416x416。有需要的可以修改回来。 代码中的默认anchors是基于608x608的图片的。   
-**注意不要使用中文标签，文件夹中不要有空格！**   
-**在训练前需要务必在model_data下新建一个txt文档，文档中输入需要分的类，在train.py中将classes_path指向该文件**。  
+提供的四个训练好的权重分别是基于mobilenetv1-025、mobilenetv1、mobilenetv2、mobilenetv3主干网络训练而成的。使用的时候注意backbone和权重的对应。 
+训练前注意修改alpha、model_path和backbone使得二者对应。
+预测前注意修改alhpa、model_path和backbone使得二者对应。
 
 ### 小技巧的设置
 在train.py文件下：   
-1、mosaic参数可用于控制是否实现Mosaic数据增强。   
-2、Cosine_scheduler可用于控制是否使用学习率余弦退火衰减。   
-3、label_smoothing可用于控制是否Label Smoothing平滑。
+1、mosaic参数可用于控制是否实现Mosaic数据增强。    
+2、Cosine_scheduler可用于控制是否使用学习率余弦退火衰减。    
+3、label_smoothing可用于控制是否Label Smoothing平滑。  
 
 ### 文件下载
-训练所需的yolo4_weights.h5可在百度网盘中下载。  
-链接: https://pan.baidu.com/s/1FF79PmRc8BzZk8M_ARdMmw 提取码: dc2j  
-yolo4_weights.h5是coco数据集的权重。  
-yolo4_voc_weights.h5是voc数据集的权重。
-
+训练所需的各个权值可在百度网盘中下载。    
+链接: https://pan.baidu.com/s/1fDhjpgTJ3LKZswBO6sdKmw 提取码: 8u6c  
+三个已经训练好的权重均为VOC数据集的权重。  
+  
 ### 预测步骤
 #### 1、使用预训练权重
-a、下载完库后解压，在百度网盘下载yolo4_weights.h5或者yolo4_voc_weights.h5，放入model_data，运行predict.py，输入  
+a、下载完库后解压，在百度网盘下载权重，放入model_data，运行predict.py，输入  
 ```python
 img/street.jpg
 ```
@@ -49,19 +49,21 @@ img/street.jpg
 b、利用video.py可进行摄像头检测。  
 #### 2、使用自己训练的权重
 a、按照训练步骤训练。  
-b、在yolo.py文件里面，在如下部分修改model_path和classes_path使其对应训练好的文件；**model_path对应logs文件夹下面的权值文件，classes_path是model_path对应分的类**。  
+b、在yolo.py文件里面，在如下部分修改model_path、alpha和classes_path使其对应训练好的文件；**model_path对应logs文件夹下面的权值文件，alpha是通道的缩放比例，classes_path是model_path对应分的类**。  
 ```python
 _defaults = {
-    "model_path": 'model_data/yolo4_weight.h5',
-    "anchors_path": 'model_data/yolo_anchors.txt',
-    "classes_path": 'model_data/coco_classes.txt,
-    "score" : 0.5,
-    "iou" : 0.3,
+    "model_path"        : 'model_data/yolov4_mobilenet_v1_voc_map77.57.h5',
+    "anchors_path"      : 'model_data/yolo_anchors.txt',
+    "classes_path"      : 'model_data/voc_classes.txt',
+    "backbone"          : 'mobilenetv1',
+    "alpha"             : 1,
+    "score"             : 0.5,
+    "iou"               : 0.3,
+    "max_boxes"         : 100,
     # 显存比较小可以使用416x416
     # 显存比较大可以使用608x608
-    "model_image_size" : (416, 416)
+    "model_image_size"  : (416, 416)
 }
-
 ```
 c、运行predict.py，输入  
 ```python
