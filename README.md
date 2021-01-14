@@ -14,10 +14,10 @@
 ### 性能情况
 | 训练数据集 | 权值文件名称 | 测试数据集 | 输入图片大小 | mAP 0.5:0.95 | mAP 0.5 |
 | :-----: | :-----: | :------: | :------: | :------: | :-----: |
-| VOC07+12 | [yolov4_mobilenet_v1_025_voc_map64.49.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc_map64.49.h5) | VOC-Test07 | 416x416 | - | 64.49
-| VOC07+12 | [yolov4_mobilenet_v1_voc_map77.57.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc_map77.57.h5) | VOC-Test07 | 416x416 | - | 77.57
-| VOC07+12 | [yolov4_mobilenet_v2_voc_map77.63.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc_map77.63.h5) | VOC-Test07 | 416x416 | - | 77.63
-| VOC07+12 | [yolov4_mobilenet_v3_voc_map75.25.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc_map75.25.h5) | VOC-Test07 | 416x416 | - | 75.25
+| VOC07+12 | [yolov4_mobilenet_v1_025_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc.h5) | VOC-Test07 | 416x416 | - | 64.73
+| VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 78.42
+| VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 78.56
+| VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 76.07
 
 ### 所需环境
 tensorflow-gpu==1.13.1  
@@ -36,7 +36,7 @@ keras==2.1.5
 
 ### 文件下载
 训练所需的各个权值可在百度网盘中下载。    
-链接: https://pan.baidu.com/s/1fDhjpgTJ3LKZswBO6sdKmw 提取码: 8u6c  
+链接: https://pan.baidu.com/s/1hGE_4Ok75u2iZWNeyPTRFA 提取码: m1et  
 三个已经训练好的权重均为VOC数据集的权重。  
   
 ### 预测步骤
