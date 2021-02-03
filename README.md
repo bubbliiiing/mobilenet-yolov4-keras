@@ -1,4 +1,4 @@
-## YOLOV4：You Only Look Once目标检测模型-修改mobilenet系列主干网络-在pytorch当中的实现
+## YOLOV4：You Only Look Once目标检测模型-修改mobilenet系列主干网络-在Keras当中的实现
 ---
 
 ### 目录
@@ -14,10 +14,10 @@
 ### 性能情况
 | 训练数据集 | 权值文件名称 | 测试数据集 | 输入图片大小 | mAP 0.5:0.95 | mAP 0.5 |
 | :-----: | :-----: | :------: | :------: | :------: | :-----: |
-| VOC07+12 | [yolov4_mobilenet_v1_025_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc.h5) | VOC-Test07 | 416x416 | - | 64.73
-| VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 78.42
-| VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 78.56
-| VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 76.07
+| VOC07+12 | [yolov4_mobilenet_v1_025_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc.h5) | VOC-Test07 | 416x416 | - | 64.90
+| VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 79.25
+| VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 78.82
+| VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 77.30
 
 ### 所需环境
 tensorflow-gpu==1.13.1  
@@ -36,8 +36,8 @@ keras==2.1.5
 
 ### 文件下载
 训练所需的各个权值可在百度网盘中下载。    
-链接: https://pan.baidu.com/s/1hGE_4Ok75u2iZWNeyPTRFA 提取码: m1et  
-三个已经训练好的权重均为VOC数据集的权重。  
+链接: https://pan.baidu.com/s/1CA4d9gVBI5JObnhK_xRPxQ 提取码: 9am5   
+四个已经训练好的权重均为VOC数据集的权重。  
   
 ### 预测步骤
 #### 1、使用预训练权重
