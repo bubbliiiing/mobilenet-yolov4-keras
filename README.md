@@ -14,10 +14,10 @@
 ### 性能情况
 | 训练数据集 | 权值文件名称 | 测试数据集 | 输入图片大小 | mAP 0.5:0.95 | mAP 0.5 |
 | :-----: | :-----: | :------: | :------: | :------: | :-----: |
-| VOC07+12 | [yolov4_mobilenet_v1_025_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc.h5) | VOC-Test07 | 416x416 | - | 64.90
-| VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 79.25
-| VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 78.82
-| VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 77.30
+| VOC07+12 | [yolov4_mobilenet_v1_025_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_025_voc.h5) | VOC-Test07 | 416x416 | - | 66.29
+| VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 80.18
+| VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 79.72
+| VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 78.45
 
 ### 所需环境
 tensorflow-gpu==1.13.1  
