@@ -321,7 +321,7 @@ if __name__ == "__main__":
     if True:
         Init_epoch = 0
         Freeze_epoch = 50
-        batch_size = 8
+        batch_size = 16
         learning_rate_base = 1e-3
 
         if Cosine_scheduler:
@@ -360,7 +360,7 @@ if __name__ == "__main__":
     if True:
         Freeze_epoch = 50
         Epoch = 100
-        batch_size = 2
+        batch_size = 8
         learning_rate_base = 1e-4
 
         if Cosine_scheduler:
