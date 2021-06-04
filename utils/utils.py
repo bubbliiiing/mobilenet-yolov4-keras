@@ -1,12 +1,13 @@
+import os
 from functools import reduce
 
 import cv2
 import keras
 import keras.backend as K
+import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.colors import hsv_to_rgb, rgb_to_hsv
+import scipy.signal
 from PIL import Image
-
 
 def compose(*funcs):
     if funcs:
@@ -286,6 +287,11 @@ def get_random_data(annotation_line, input_shape, max_boxes=100, jitter=.3, hue=
         box[:, [0,2]] = box[:, [0,2]]*nw/iw + dx
         box[:, [1,3]] = box[:, [1,3]]*nh/ih + dy
         if flip: box[:, [0,2]] = w - box[:, [2,0]]
+
+        center_x = (box[:, 0] + box[:, 2])/2    
+        center_y = (box[:, 1] + box[:, 3])/2
+        box = box[np.logical_and(np.logical_and(center_x>0, center_y>0), np.logical_and(center_x<w, center_y<h))]
+            
         box[:, 0:2][box[:, 0:2]<0] = 0
         box[:, 2][box[:, 2]>w] = w
         box[:, 3][box[:, 3]>h] = h
@@ -297,6 +303,57 @@ def get_random_data(annotation_line, input_shape, max_boxes=100, jitter=.3, hue=
     
     return image_data, box_data
 
+class LossHistory(keras.callbacks.Callback):
+    def __init__(self, log_dir):
+        import datetime
+        curr_time = datetime.datetime.now()
+        time_str = datetime.datetime.strftime(curr_time,'%Y_%m_%d_%H_%M_%S')
+        self.log_dir    = log_dir
+        self.time_str   = time_str
+        self.save_path  = os.path.join(self.log_dir, "loss_" + str(self.time_str))  
+        self.losses     = []
+        self.val_loss   = []
+        
+        os.makedirs(self.save_path)
+
+    def on_epoch_end(self, batch, logs={}):
+        self.losses.append(logs.get('loss'))
+        self.val_loss.append(logs.get('val_loss'))
+        with open(os.path.join(self.save_path, "epoch_loss_" + str(self.time_str) + ".txt"), 'a') as f:
+            f.write(str(logs.get('loss')))
+            f.write("\n")
+        with open(os.path.join(self.save_path, "epoch_val_loss_" + str(self.time_str) + ".txt"), 'a') as f:
+            f.write(str(logs.get('val_loss')))
+            f.write("\n")
+        self.loss_plot()
+
+    def loss_plot(self):
+        iters = range(len(self.losses))
+
+        plt.figure()
+        plt.plot(iters, self.losses, 'red', linewidth = 2, label='train loss')
+        plt.plot(iters, self.val_loss, 'coral', linewidth = 2, label='val loss')
+        try:
+            if len(self.losses) < 25:
+                num = 5
+            else:
+                num = 15
+            
+            plt.plot(iters, scipy.signal.savgol_filter(self.losses, num, 3), 'green', linestyle = '--', linewidth = 2, label='smooth train loss')
+            plt.plot(iters, scipy.signal.savgol_filter(self.val_loss, num, 3), '#8B4513', linestyle = '--', linewidth = 2, label='smooth val loss')
+        except:
+            pass
+
+        plt.grid(True)
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.title('A Loss Curve')
+        plt.legend(loc="upper right")
+
+        plt.savefig(os.path.join(self.save_path, "epoch_loss_" + str(self.time_str) + ".png"))
+
+        plt.cla()
+        plt.close("all")
 
 def cosine_decay_with_warmup(global_step,
                              learning_rate_base,

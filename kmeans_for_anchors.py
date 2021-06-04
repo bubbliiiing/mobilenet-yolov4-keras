@@ -1,7 +1,7 @@
 import glob
 import random
 import xml.etree.ElementTree as ET
-
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -54,6 +54,10 @@ def kmeans(box,k):
 
         last_clu = near
 
+    for j in range(k):
+        plt.scatter(box[near == j][:,0], box[near == j][:,1])
+        plt.scatter(cluster[j][0], cluster[j][1], marker='x', c='black')
+    plt.show()
     return cluster
 
 def load_data(path):

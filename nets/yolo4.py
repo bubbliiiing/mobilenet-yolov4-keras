@@ -1,17 +1,16 @@
 from functools import wraps
 
-import numpy as np
 import tensorflow as tf
 from keras import backend as K
-from keras.layers import (Activation, Add, Concatenate, Conv2D,
-                          DepthwiseConv2D, MaxPooling2D, UpSampling2D,
-                          ZeroPadding2D)
-from keras.layers.advanced_activations import LeakyReLU
+from keras.initializers import random_normal
+from keras.layers import (Activation, Concatenate, Conv2D, DepthwiseConv2D,
+                          MaxPooling2D, UpSampling2D)
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.regularizers import l2
 from utils.utils import compose
 
+from nets.ghostnet import Ghostnet
 from nets.mobilenet_v1 import MobileNetV1
 from nets.mobilenet_v2 import MobileNetV2
 from nets.mobilenet_v3 import MobileNetV3
@@ -27,7 +26,7 @@ def relu6(x):
 #--------------------------------------------------#
 @wraps(Conv2D)
 def DarknetConv2D(*args, **kwargs):
-    darknet_conv_kwargs = {}
+    darknet_conv_kwargs = {'kernel_initializer' : random_normal(stddev=0.02)}
     darknet_conv_kwargs['padding'] = 'valid' if kwargs.get('strides')==(2,2) else 'same'
     darknet_conv_kwargs.update(kwargs)
     return Conv2D(*args, **darknet_conv_kwargs)
@@ -49,11 +48,11 @@ def DarknetConv2D_BN_Leaky(*args, **kwargs):
 #   DepthwiseConv2D + BatchNormalization + Relu6
 #---------------------------------------------------#
 def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha = 1,
-                          depth_multiplier=1, strides=(1, 1), block_id=1):
+                          depth_multiplier=1, strides=(1, 1)):
 
     pointwise_conv_filters = int(pointwise_conv_filters * alpha)
     
-    x = DepthwiseConv2D((3, 3),
+    x = DepthwiseConv2D((3, 3), depthwise_initializer=random_normal(stddev=0.02),
                         padding='same',
                         depth_multiplier=depth_multiplier,
                         strides=strides,
@@ -62,7 +61,7 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha = 1,
     x = BatchNormalization()(x)
     x = Activation(relu6)(x)
 
-    x = Conv2D(pointwise_conv_filters, (1, 1),
+    x = Conv2D(pointwise_conv_filters, (1, 1), kernel_initializer=random_normal(stddev=0.02),
                padding='same',
                use_bias=False,
                strides=(1, 1))(x)
@@ -103,8 +102,13 @@ def yolo_body(inputs, num_anchors, num_classes, backbone="mobilenetv1", alpha=1)
         #   52,52,40；26,26,112；13,13,160
         #---------------------------------------------------#
         feat1,feat2,feat3 = MobileNetV3(inputs, alpha=alpha)
+    elif backbone=="ghostnet":
+        #---------------------------------------------------#   
+        #   52,52,40；26,26,112；13,13,160
+        #---------------------------------------------------#
+        feat1,feat2,feat3 = Ghostnet(inputs)
     else:
-        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3.'.format(backbone))
+        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet.'.format(backbone))
     
     P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(feat3)
     P5 = _depthwise_conv_block(P5, int(1024* alpha))
