@@ -2,9 +2,9 @@
 ---
 
 **2021年2月8日更新：**   
-**加入letterbox_image的选项，关闭letterbox_image后网络的map一般可以得到提升。**
+**加入letterbox_image的选项，关闭letterbox_image后网络的map一般可以得到提升。**    
 
-**2021年6月4日更新：**   
+**2021年6月4日更新：**     
 **加入ghostnet主干网络。**
 
 ## 目录
