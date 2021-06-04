@@ -4,6 +4,9 @@
 **2021年2月8日更新：**   
 **加入letterbox_image的选项，关闭letterbox_image后网络的map一般可以得到提升。**
 
+**2021年6月4日更新：**   
+**加入ghostnet主干网络。**
+
 ## 目录
 1. [性能情况 Performance](#性能情况)
 2. [所需环境 Environment](#所需环境)
@@ -22,6 +25,7 @@
 | VOC07+12 | [yolov4_mobilenet_v1_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v1_voc.h5) | VOC-Test07 | 416x416 | - | 80.18
 | VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 79.72
 | VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 78.45
+| VOC07+12 | [yolov4_ghostnet_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_ghostnet_voc.h5) | VOC-Test07 | 416x416 | - | 78.64
 
 ## 所需环境
 tensorflow-gpu==1.13.1  
