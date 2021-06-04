@@ -184,7 +184,7 @@ if __name__ == "__main__":
     #   mobilenetv1可选的alpha有0.25, 0.5, 0.75, 1.0
     #   mobilenetv2可选的alpha有0.5, 0.75, 1.0, 1.3
     #   mobilenetv3可选的alpha有0.75, 1.0
-    #   ghostnet的alpha参数失效
+    #   ghostnet可选的alpha有1.0
     #   权值文件的下载请看README
     #--------------------------------------------------#
     backbone    = "mobilenetv1"
