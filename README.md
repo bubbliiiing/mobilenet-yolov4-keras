@@ -44,7 +44,7 @@ keras==2.1.5
 
 ## 文件下载
 训练所需的各个权值可在百度网盘中下载。    
-链接: https://pan.baidu.com/s/1CA4d9gVBI5JObnhK_xRPxQ 提取码: 9am5   
+链接: https://pan.baidu.com/s/1G3XmcrOkta6X1TBWkyI8Lw 提取码: en6r   
 四个已经训练好的权重均为VOC数据集的权重。  
   
 VOC数据集下载地址如下：  
