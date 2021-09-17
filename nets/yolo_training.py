@@ -11,6 +11,7 @@ def box_ciou(b1, b2):
     ----------
     b1: tensor, shape=(batch, feat_w, feat_h, anchor_num, 4), xywh
     b2: tensor, shape=(batch, feat_w, feat_h, anchor_num, 4), xywh
+
     返回为：
     -------
     ciou: tensor, shape=(batch, feat_w, feat_h, anchor_num, 1)
