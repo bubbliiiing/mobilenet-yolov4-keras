@@ -1,8 +1,7 @@
 from keras import backend
-from keras.layers import (Activation, Add, BatchNormalization, Conv2D, Dense,
-                          DepthwiseConv2D, GlobalAveragePooling2D, Input,
-                          Multiply, Reshape)
-from keras.models import Model
+from keras.layers import (Activation, Add, BatchNormalization, Conv2D,
+                          DepthwiseConv2D, GlobalAveragePooling2D, Multiply,
+                          Reshape)
 
 
 def _activation(x, name='relu'):

@@ -1,20 +1,11 @@
 #-------------------------------------------------------------#
 #   MobileNetV2的网络部分
 #-------------------------------------------------------------#
-import math
 
-import numpy as np
-import tensorflow as tf
 from keras import backend
-from keras.applications import imagenet_utils
-from keras.applications.imagenet_utils import decode_predictions
-from keras.layers import (Activation, Add, Conv2D, Dense, DepthwiseConv2D,
-                          Dropout, GlobalAveragePooling2D, GlobalMaxPooling2D,
-                          Input, MaxPooling2D, ZeroPadding2D)
+from keras.layers import (Activation, Add, Conv2D, DepthwiseConv2D,
+                          ZeroPadding2D)
 from keras.layers.normalization import BatchNormalization
-from keras.models import Model
-from keras.preprocessing import image
-from keras.utils.data_utils import get_file
 
 # TODO Change path to v1.1
 BASE_WEIGHT_PATH = ('https://github.com/JonathanCMitchell/mobilenet_v2_keras/'

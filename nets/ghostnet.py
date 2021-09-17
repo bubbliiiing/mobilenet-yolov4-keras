@@ -1,13 +1,9 @@
 import math
-import warnings
 
-import numpy as np
-import tensorflow as tf
 from keras import backend as K
-from keras.applications.imagenet_utils import decode_predictions
 from keras.initializers import random_normal
 from keras.layers import (Activation, Add, BatchNormalization, Concatenate,
-                          Conv2D, DepthwiseConv2D, GlobalAveragePooling2D, 
+                          Conv2D, DepthwiseConv2D, GlobalAveragePooling2D,
                           Lambda, Multiply, Reshape)
 
 

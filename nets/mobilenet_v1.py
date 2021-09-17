@@ -1,14 +1,8 @@
 #-------------------------------------------------------------#
 #   MobileNet的网络部分
 #-------------------------------------------------------------#
-import keras.backend as backend
-import numpy as np
-import tensorflow as tf
 from keras import backend as K
-from keras.layers import (Activation, Add, Concatenate, Conv2D,
-                          DepthwiseConv2D, MaxPooling2D, UpSampling2D,
-                          ZeroPadding2D)
-from keras.layers.advanced_activations import LeakyReLU
+from keras.layers import Activation, Conv2D, DepthwiseConv2D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.regularizers import l2
