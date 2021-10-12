@@ -1,6 +1,9 @@
 ## YOLOV4：You Only Look Once目标检测模型-修改mobilenet系列主干网络-在Keras当中的实现
 ---
 
+**2021年10月12日更新：**   
+**进行了大幅度的更新，对代码的模块进行修改，加了大量注释。**   
+
 **2021年6月4日更新：**     
 **加入ghostnet主干网络。**
 
@@ -40,7 +43,7 @@ keras==2.1.5
 3、label_smoothing可用于控制是否Label Smoothing平滑。  
 
 ## 文件下载
-训练所需的各个权值可在百度网盘中下载。    
+训练所需的各个权值、主干的权值可在百度网盘中下载。    
 链接: https://pan.baidu.com/s/1G3XmcrOkta6X1TBWkyI8Lw 提取码: en6r   
 四个已经训练好的权重均为VOC数据集的权重。  
   
