@@ -115,7 +115,7 @@ def yolo_body(input_shape, anchors_mask, num_classes, backbone="mobilenetv1", al
         #---------------------------------------------------#
         feat1,feat2,feat3 = DenseNet(inputs, backbone)
     else:
-        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet.'.format(backbone))
+        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet, densenet121, densenet169, densenet201.'.format(backbone))
     
     P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(feat3)
     P5 = _depthwise_conv_block(P5, int(1024* alpha))
