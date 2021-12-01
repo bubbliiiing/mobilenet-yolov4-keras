@@ -183,7 +183,7 @@ if __name__ == "__main__":
     elif backbone in ["densenet121", "densenet169", "densenet201"]:
         freeze_layers = {'densenet121' : 426, 'densenet169' : 594, 'densenet201' : 706}[backbone]
     else:
-        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet.'.format(backbone))
+        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet, densenet121, densenet169, densenet201.'.format(backbone))
 
     if Freeze_Train:
         for i in range(freeze_layers): model_body.layers[i].trainable = False
