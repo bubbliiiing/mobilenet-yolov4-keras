@@ -8,7 +8,7 @@ if __name__ == "__main__":
     anchors_mask    = [[6, 7, 8], [3, 4, 5], [0, 1, 2]]
     num_classes     = 80
 
-    model = yolo_body(input_shape, anchors_mask, num_classes)
+    model = yolo_body(input_shape, anchors_mask, num_classes, backbone="densenet121")
     model.summary()
 
     # mobilenetv1 41,005,757
@@ -23,5 +23,5 @@ if __name__ == "__main__":
     # 修改了PANET的mobilenetv2-0.5      2,370,541
     # 修改了PANET的mobilenetv3-0.75     6,315,309
     
-    # for i,layer in enumerate(model.layers):
-    #     print(i,layer.name)
+    for i,layer in enumerate(model.layers):
+        print(i,layer.name)

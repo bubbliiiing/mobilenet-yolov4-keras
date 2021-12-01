@@ -14,6 +14,7 @@ from nets.ghostnet import Ghostnet
 from nets.mobilenet_v1 import MobileNetV1
 from nets.mobilenet_v2 import MobileNetV2
 from nets.mobilenet_v3 import MobileNetV3
+from nets.densenet import DenseNet
 from nets.yolo_training import yolo_loss
 
 
@@ -108,6 +109,11 @@ def yolo_body(input_shape, anchors_mask, num_classes, backbone="mobilenetv1", al
         #   52,52,40；26,26,112；13,13,160
         #---------------------------------------------------#
         feat1,feat2,feat3 = Ghostnet(inputs)
+    elif backbone in ["densenet121", "densenet169", "densenet201"]:
+        #---------------------------------------------------#   
+        #   52,52,256；26,26,512；13,13,1024
+        #---------------------------------------------------#
+        feat1,feat2,feat3 = DenseNet(inputs, backbone)
     else:
         raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet.'.format(backbone))
     

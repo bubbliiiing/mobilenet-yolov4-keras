@@ -58,20 +58,23 @@ if __name__ == "__main__":
     #   网络一般不从0开始训练，至少会使用主干部分的权值，有些论文提到可以不用预训练，主要原因是他们 数据集较大 且 调参能力优秀。
     #   如果一定要训练网络的主干部分，可以了解imagenet数据集，首先训练分类模型，分类模型的 主干部分 和该模型通用，基于此进行训练。
     #----------------------------------------------------------------------------------------------------------------------------#
-    model_path      = 'model_data/yolov4_mobilenet_v2_voc.h5'
+    model_path      = 'model_data/yolov4_mobilenet_v1_voc.h5'
     #------------------------------------------------------#
     #   输入的shape大小，一定要是32的倍数
     #------------------------------------------------------#
     input_shape     = [416, 416]
     #--------------------------------------------------#
     #   一定要注意backbone、alpha与权值文件的对应！
-    #   mobilenetv1可选的alpha有0.25, 0.5, 0.75, 1.0
-    #   mobilenetv2可选的alpha有0.5, 0.75, 1.0, 1.3
-    #   mobilenetv3可选的alpha有0.75, 1.0
-    #   ghostnet可选的alpha有1.0
+    #   mobilenetv1 可选的alpha有0.25, 0.5, 0.75, 1.0
+    #   mobilenetv2 可选的alpha有0.5, 0.75, 1.0, 1.3
+    #   mobilenetv3 可选的alpha有0.75, 1.0
+    #   ghostnet    可选的alpha有1.0
+    #   densenet121 可选的alpha有1.0
+    #   densenet169 可选的alpha有1.0
+    #   densenet201 可选的alpha有1.0
     #   权值文件的下载请看README
     #--------------------------------------------------#
-    backbone        = "mobilenetv2"
+    backbone        = "mobilenetv1"
     alpha           = 1
     #------------------------------------------------------#
     #   Yolov4的tricks应用
@@ -177,6 +180,8 @@ if __name__ == "__main__":
         freeze_layers = 186
     elif backbone == "ghostnet":
         freeze_layers = 300
+    elif backbone in ["densenet121", "densenet169", "densenet201"]:
+        freeze_layers = {'densenet121' : 426, 'densenet169' : 594, 'densenet201' : 706}[backbone]
     else:
         raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet.'.format(backbone))
 
