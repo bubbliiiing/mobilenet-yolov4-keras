@@ -1,5 +1,5 @@
-from keras import layers
-from keras import backend 
+from keras import backend, layers
+
 
 def conv_block(x, growth_rate, name):
     x1 = layers.BatchNormalization(name=name + '_0_bn')(x)

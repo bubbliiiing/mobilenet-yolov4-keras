@@ -126,4 +126,4 @@ def MobileNetV3(inputs, alpha=1.0, kernel=5, se_ratio=0.25):
     x = _bneck(x, 6, 160, alpha, kernel, 1, se_ratio, 'hardswish', 14)
     feat3 = x
 
-    return feat1,feat2,feat3
+    return feat1, feat2, feat3

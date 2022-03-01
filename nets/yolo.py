@@ -10,12 +10,14 @@ from keras.models import Model
 from keras.regularizers import l2
 from utils.utils import compose
 
-from nets.ghostnet import Ghostnet
-from nets.mobilenet_v1 import MobileNetV1
-from nets.mobilenet_v2 import MobileNetV2
-from nets.mobilenet_v3 import MobileNetV3
-from nets.densenet import DenseNet
-from nets.yolo_training import yolo_loss
+from .densenet import DenseNet
+from .ghostnet import Ghostnet
+from .mobilenet_v1 import MobileNetV1
+from .mobilenet_v2 import MobileNetV2
+from .mobilenet_v3 import MobileNetV3
+from .resnet50 import ResNet50
+from .vgg import VGG16
+from .yolo_training import yolo_loss
 
 
 def relu6(x):
@@ -27,8 +29,12 @@ def relu6(x):
 #------------------------------------------------------#
 @wraps(Conv2D)
 def DarknetConv2D(*args, **kwargs):
-    darknet_conv_kwargs = {'kernel_initializer' : random_normal(stddev=0.02), 'kernel_regularizer': l2(5e-4)}
-    darknet_conv_kwargs['padding'] = 'valid' if kwargs.get('strides')==(2,2) else 'same'
+    darknet_conv_kwargs = {'kernel_initializer' : random_normal(stddev=0.02), 'kernel_regularizer' : l2(kwargs.get('weight_decay', 5e-4))}
+    darknet_conv_kwargs['padding'] = 'valid' if kwargs.get('strides')==(2, 2) else 'same'
+    try:
+        del kwargs['weight_decay']
+    except:
+        pass
     darknet_conv_kwargs.update(kwargs)
     return Conv2D(*args, **darknet_conv_kwargs)
 
@@ -49,7 +55,7 @@ def DarknetConv2D_BN_Leaky(*args, **kwargs):
 #   DepthwiseConv2D + BatchNormalization + Relu6
 #---------------------------------------------------#
 def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha = 1,
-                          depth_multiplier=1, strides=(1, 1)):
+                          depth_multiplier=1, strides=(1, 1), weight_decay=5e-4):
 
     pointwise_conv_filters = int(pointwise_conv_filters * alpha)
     
@@ -57,117 +63,129 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha = 1,
                         padding='same',
                         depth_multiplier=depth_multiplier,
                         strides=strides,
+                        depthwise_regularizer=l2(weight_decay),
                         use_bias=False)(inputs)
 
     x = BatchNormalization()(x)
     x = Activation(relu6)(x)
 
     x = DarknetConv2D(pointwise_conv_filters, (1, 1), 
-                    padding='same',
-                    use_bias=False,
-                    strides=(1, 1))(x)
+                        padding='same',
+                        use_bias=False,
+                        weight_decay=weight_decay,
+                        strides=(1, 1))(x)
     x = BatchNormalization()(x)
     return Activation(relu6)(x)
     
 #---------------------------------------------------#
 #   进行五次卷积
 #---------------------------------------------------#
-def make_five_convs(x, num_filters):
+def make_five_convs(x, num_filters, weight_decay=5e-4):
     # 五次卷积
-    x = DarknetConv2D_BN_Leaky(num_filters, (1,1))(x)
-    x = _depthwise_conv_block(x, num_filters*2,alpha=1)
-    x = DarknetConv2D_BN_Leaky(num_filters, (1,1))(x)
-    x = _depthwise_conv_block(x, num_filters*2,alpha=1)
-    x = DarknetConv2D_BN_Leaky(num_filters, (1,1))(x)
+    x = DarknetConv2D_BN_Leaky(num_filters, (1,1), weight_decay=weight_decay)(x)
+    x = _depthwise_conv_block(x, num_filters*2, alpha=1, weight_decay=weight_decay)
+    x = DarknetConv2D_BN_Leaky(num_filters, (1,1), weight_decay=weight_decay)(x)
+    x = _depthwise_conv_block(x, num_filters*2, alpha=1, weight_decay=weight_decay)
+    x = DarknetConv2D_BN_Leaky(num_filters, (1,1), weight_decay=weight_decay)(x)
     return x
 
 #---------------------------------------------------#
 #   Panet网络的构建，并且获得预测结果
 #---------------------------------------------------#
-def yolo_body(input_shape, anchors_mask, num_classes, backbone="mobilenetv1", alpha=1):
+def yolo_body(input_shape, anchors_mask, num_classes, backbone="mobilenetv1", alpha=1, weight_decay=5e-4):
     inputs = Input(input_shape)
     #---------------------------------------------------#   
     #   生成mobilnet的主干模型，获得三个有效特征层。
     #---------------------------------------------------#
-    if backbone=="mobilenetv1":
+    if backbone == "mobilenetv1":
         #---------------------------------------------------#   
         #   52,52,256；26,26,512；13,13,1024
         #---------------------------------------------------#
-        feat1,feat2,feat3 = MobileNetV1(inputs, alpha=alpha)
-    elif backbone=="mobilenetv2":
+        feat1, feat2, feat3 = MobileNetV1(inputs, alpha=alpha)
+    elif backbone == "mobilenetv2":
         #---------------------------------------------------#   
         #   52,52,32；26,26,92；13,13,320
         #---------------------------------------------------#
-        feat1,feat2,feat3 = MobileNetV2(inputs, alpha=alpha)
-    elif backbone=="mobilenetv3":
+        feat1, feat2, feat3 = MobileNetV2(inputs, alpha=alpha)
+    elif backbone == "mobilenetv3":
         #---------------------------------------------------#   
         #   52,52,40；26,26,112；13,13,160
         #---------------------------------------------------#
-        feat1,feat2,feat3 = MobileNetV3(inputs, alpha=alpha)
-    elif backbone=="ghostnet":
+        feat1, feat2, feat3 = MobileNetV3(inputs, alpha=alpha)
+    elif backbone == "ghostnet":
         #---------------------------------------------------#   
         #   52,52,40；26,26,112；13,13,160
         #---------------------------------------------------#
-        feat1,feat2,feat3 = Ghostnet(inputs)
+        feat1, feat2, feat3 = Ghostnet(inputs)
+    elif backbone == "vgg":
+        #---------------------------------------------------#   
+        #   52,52,256；26,26,512；13,13,512
+        #---------------------------------------------------#
+        feat1, feat2, feat3 = VGG16(inputs)
     elif backbone in ["densenet121", "densenet169", "densenet201"]:
         #---------------------------------------------------#   
         #   52,52,256；26,26,512；13,13,1024
         #---------------------------------------------------#
-        feat1,feat2,feat3 = DenseNet(inputs, backbone)
+        feat1, feat2, feat3 = DenseNet(inputs, backbone)
+    elif backbone == "resnet50":
+        #---------------------------------------------------#   
+        #   52,52,512；26,26,1024；13,13,2048
+        #---------------------------------------------------#
+        feat1, feat2, feat3 = ResNet50(inputs)
     else:
-        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet, densenet121, densenet169, densenet201.'.format(backbone))
-    
-    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(feat3)
-    P5 = _depthwise_conv_block(P5, int(1024* alpha))
-    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(P5)
+        raise ValueError('Unsupported backbone - `{}`, Use mobilenetv1, mobilenetv2, mobilenetv3, ghostnet, vgg, densenet121, densenet169, densenet201, resnet50.'.format(backbone))
+
+    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1), weight_decay=weight_decay)(feat3)
+    P5 = _depthwise_conv_block(P5, int(1024* alpha), weight_decay=weight_decay)
+    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1), weight_decay=weight_decay)(P5)
     maxpool1 = MaxPooling2D(pool_size=(13,13), strides=(1,1), padding='same')(P5)
     maxpool2 = MaxPooling2D(pool_size=(9,9), strides=(1,1), padding='same')(P5)
     maxpool3 = MaxPooling2D(pool_size=(5,5), strides=(1,1), padding='same')(P5)
     P5 = Concatenate()([maxpool1, maxpool2, maxpool3, P5])
-    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(P5)
-    P5 = _depthwise_conv_block(P5, int(1024* alpha))
-    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1))(P5)
+    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1), weight_decay=weight_decay)(P5)
+    P5 = _depthwise_conv_block(P5, int(1024* alpha), weight_decay=weight_decay)
+    P5 = DarknetConv2D_BN_Leaky(int(512* alpha), (1,1), weight_decay=weight_decay)(P5)
 
-    P5_upsample = compose(DarknetConv2D_BN_Leaky(int(256* alpha), (1,1)), UpSampling2D(2))(P5)
+    P5_upsample = compose(DarknetConv2D_BN_Leaky(int(256* alpha), (1,1), weight_decay=weight_decay), UpSampling2D(2))(P5)
     
-    P4 = DarknetConv2D_BN_Leaky(int(256* alpha), (1,1))(feat2)
+    P4 = DarknetConv2D_BN_Leaky(int(256* alpha), (1,1), weight_decay=weight_decay)(feat2)
     P4 = Concatenate()([P4, P5_upsample])
-    P4 = make_five_convs(P4,int(256* alpha))
+    P4 = make_five_convs(P4,int(256* alpha), weight_decay=weight_decay)
 
-    P4_upsample = compose(DarknetConv2D_BN_Leaky(int(128* alpha), (1,1)), UpSampling2D(2))(P4)
+    P4_upsample = compose(DarknetConv2D_BN_Leaky(int(128* alpha), (1,1), weight_decay=weight_decay), UpSampling2D(2))(P4)
     
-    P3 = DarknetConv2D_BN_Leaky(int(128* alpha), (1,1))(feat1)
+    P3 = DarknetConv2D_BN_Leaky(int(128* alpha), (1,1), weight_decay=weight_decay)(feat1)
     P3 = Concatenate()([P3, P4_upsample])
-    P3 = make_five_convs(P3,int(128* alpha))
+    P3 = make_five_convs(P3,int(128* alpha), weight_decay=weight_decay)
 
     #---------------------------------------------------#
     #   第三个特征层
     #   y3=(batch_size,52,52,3,85)
     #---------------------------------------------------#
-    P3_output = _depthwise_conv_block(P3, int(256* alpha))
-    P3_output = DarknetConv2D(len(anchors_mask[0])*(num_classes+5), (1,1))(P3_output)
+    P3_output = _depthwise_conv_block(P3, int(256* alpha), weight_decay=weight_decay)
+    P3_output = DarknetConv2D(len(anchors_mask[0])*(num_classes+5), (1,1), weight_decay=weight_decay)(P3_output)
 
-    P3_downsample = _depthwise_conv_block(P3, int(256* alpha), strides=(2,2))
+    P3_downsample = _depthwise_conv_block(P3, int(256* alpha), strides=(2,2), weight_decay=weight_decay)
     P4 = Concatenate()([P3_downsample, P4])
-    P4 = make_five_convs(P4,int(256* alpha))
+    P4 = make_five_convs(P4,int(256* alpha), weight_decay=weight_decay)
     
     #---------------------------------------------------#
     #   第二个特征层
     #   y2=(batch_size,26,26,3,85)
     #---------------------------------------------------#
-    P4_output = _depthwise_conv_block(P4, int(512* alpha))
-    P4_output = DarknetConv2D(len(anchors_mask[1])*(num_classes+5), (1,1))(P4_output)
+    P4_output = _depthwise_conv_block(P4, int(512* alpha), weight_decay=weight_decay)
+    P4_output = DarknetConv2D(len(anchors_mask[1])*(num_classes+5), (1,1), weight_decay=weight_decay)(P4_output)
 
-    P4_downsample = _depthwise_conv_block(P4, int(512* alpha), strides=(2,2))
+    P4_downsample = _depthwise_conv_block(P4, int(512* alpha), strides=(2,2), weight_decay=weight_decay)
     P5 = Concatenate()([P4_downsample, P5])
-    P5 = make_five_convs(P5,int(512* alpha))
+    P5 = make_five_convs(P5,int(512* alpha), weight_decay=weight_decay)
     
     #---------------------------------------------------#
     #   第一个特征层
     #   y1=(batch_size,13,13,3,85)
     #---------------------------------------------------#
-    P5_output = _depthwise_conv_block(P5, int(1024* alpha))
-    P5_output = DarknetConv2D(len(anchors_mask[2])*(num_classes+5), (1,1))(P5_output)
+    P5_output = _depthwise_conv_block(P5, int(1024* alpha), weight_decay=weight_decay)
+    P5_output = DarknetConv2D(len(anchors_mask[2])*(num_classes+5), (1,1), weight_decay=weight_decay)(P5_output)
 
     return Model(inputs, [P5_output, P4_output, P3_output])
 
@@ -179,8 +197,17 @@ def get_train_model(model_body, input_shape, num_classes, anchors, anchors_mask,
         yolo_loss, 
         output_shape    = (1, ), 
         name            = 'yolo_loss', 
-        arguments       = {'input_shape' : input_shape, 'anchors' : anchors, 'anchors_mask' : anchors_mask, 
-                           'num_classes' : num_classes, 'label_smoothing' : label_smoothing}
+        arguments       = {
+            'input_shape'       : input_shape, 
+            'anchors'           : anchors, 
+            'anchors_mask'      : anchors_mask, 
+            'num_classes'       : num_classes, 
+            'balance'           : [0.4, 1.0, 4],
+            'box_ratio'         : 0.05,
+            'obj_ratio'         : 5 * (input_shape[0] * input_shape[1]) / (416 ** 2), 
+            'cls_ratio'         : 1 * (num_classes / 80),
+            'label_smoothing'   : label_smoothing
+        }
     )([*model_body.output, *y_true])
     model       = Model([model_body.input, *y_true], model_loss)
     return model

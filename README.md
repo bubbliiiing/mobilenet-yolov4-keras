@@ -26,7 +26,9 @@
 | VOC07+12 | [yolov4_mobilenet_v2_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v2_voc.h5) | VOC-Test07 | 416x416 | - | 79.72
 | VOC07+12 | [yolov4_mobilenet_v3_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_mobilenet_v3_voc.h5) | VOC-Test07 | 416x416 | - | 78.45
 | VOC07+12 | [yolov4_ghostnet_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_ghostnet_voc.h5) | VOC-Test07 | 416x416 | - | 78.64
+| VOC07+12 | [yolov4_vgg_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_vgg_voc.h5) | VOC-Test07 | 416x416 | - | 81.09
 | VOC07+12 | [yolov4_densenet121_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_densenet121_voc.h5) | VOC-Test07 | 416x416 | - | 82.90
+| VOC07+12 | [yolov4_resnet50_voc.h5](https://github.com/bubbliiiing/mobilenet-yolov4-lite-keras/releases/download/v1.0/yolov4_resnet50_voc.h5) | VOC-Test07 | 416x416 | - | 80.59
 
 ## 所需环境
 tensorflow-gpu==1.13.1  
@@ -45,8 +47,8 @@ keras==2.1.5
 
 ## 文件下载
 训练所需的各个权值、主干的权值可在百度网盘中下载。    
-链接: https://pan.baidu.com/s/1QwfPgozjsqWc-nXlmBq1Ig    
-提取码: f3pr     
+链接: https://pan.baidu.com/s/11a6jROKlctYgQBul1L7lUg    
+提取码: g916     
   
 VOC数据集下载地址如下，里面已经包括了训练集、测试集、验证集（与测试集一样），无需再次划分：  
 链接: https://pan.baidu.com/s/19Mw2u_df_nBzsC2lg20fQA    
