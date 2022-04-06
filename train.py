@@ -191,8 +191,8 @@ if __name__ == "__main__":
     lr_decay_type       = 'cos'
     #------------------------------------------------------------------#
     #   focal_loss      是否使用Focal Loss平衡正负样本
-    #   alpha           Focal Loss的正负样本平衡参数
-    #   gamma           Focal Loss的难易分类样本平衡参数
+    #   focal_alpha     Focal Loss的正负样本平衡参数
+    #   focal_gamma     Focal Loss的难易分类样本平衡参数
     #------------------------------------------------------------------#
     focal_loss          = False
     focal_alpha         = 0.25
