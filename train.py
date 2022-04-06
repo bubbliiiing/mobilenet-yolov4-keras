@@ -195,8 +195,8 @@ if __name__ == "__main__":
     #   gamma           Focal Loss的难易分类样本平衡参数
     #------------------------------------------------------------------#
     focal_loss          = False
-    alpha               = 0.25
-    gamma               = 2
+    focal_alpha         = 0.25
+    focal_gamma         = 2
     #------------------------------------------------------------------#
     #   save_period     多少个epoch保存一次权值，默认每个世代都保存
     #------------------------------------------------------------------#
@@ -237,7 +237,7 @@ if __name__ == "__main__":
         print('Load weights {}.'.format(model_path))
         model_body.load_weights(model_path, by_name=True, skip_mismatch=True)
 
-    model = get_train_model(model_body, input_shape, num_classes, anchors, anchors_mask, label_smoothing, focal_loss, alpha, gamma)
+    model = get_train_model(model_body, input_shape, num_classes, anchors, anchors_mask, label_smoothing, focal_loss, focal_alpha, focal_gamma)
     #---------------------------#
     #   读取数据集对应的txt
     #---------------------------#
