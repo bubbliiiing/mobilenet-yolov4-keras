@@ -255,9 +255,9 @@ if __name__ == "__main__":
 
     if ngpus_per_node > 1:
         model = multi_gpu_model(model_body, gpus=ngpus_per_node)
-        model = get_train_model(model, input_shape, num_classes, anchors, anchors_mask, label_smoothing)
+        model = get_train_model(model, input_shape, num_classes, anchors, anchors_mask, label_smoothing, focal_loss, focal_alpha, focal_gamma)
     else:
-        model = get_train_model(model_body, input_shape, num_classes, anchors, anchors_mask, label_smoothing)
+        model = get_train_model(model_body, input_shape, num_classes, anchors, anchors_mask, label_smoothing, focal_loss, focal_alpha, focal_gamma)
         
     #---------------------------#
     #   读取数据集对应的txt
